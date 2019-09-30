@@ -52,7 +52,7 @@ module.exports.register = async server => {
 
      server.route( {
          method: "DELETE",
-         path: "/api/tracks/delete?oid={oid}",
+         path: "/api/tracks/{oid}/delete",
          config: {
              // auth: {
              //     strategy: "session",

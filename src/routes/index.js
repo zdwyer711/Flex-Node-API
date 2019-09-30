@@ -44,4 +44,14 @@ module.exports.register = async server => {
            }
        }
    } );
+
+   // server.route( {
+   //     method: "DELETE",
+   //     path: "/{param*}",
+   //     handler: (request, h) => {
+   //         const params = request.query
+   //
+   //         console.log(params)
+   //     }
+   // } );
 };

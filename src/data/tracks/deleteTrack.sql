@@ -1,2 +1,2 @@
-DELETE  [dbo].[tracks]
-WHERE   [oid] = @oid
+DELETE [FlexTest].[dbo].[tracks]
+where oid = @oid

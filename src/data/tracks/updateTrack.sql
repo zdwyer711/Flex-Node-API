@@ -1,4 +1,4 @@
-UPDATE  [dbo].[tracks]
+UPDATE  [FlexTest].[dbo].[tracks]
 SET     [title] = @title
        , [artist] = @artist
        , [track_id] = track_id
@@ -8,5 +8,5 @@ SELECT  [oid]
        , [title]
        , [artist]
        , [track_id]
-FROM    [dbo].[tracks]
+FROM    [FlexTest].[dbo].[tracks]
 WHERE   [oid] = @oid

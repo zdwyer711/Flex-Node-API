@@ -29,7 +29,7 @@
 
    server.route( {
          method: "POST",
-         path: "/api/tracks/{oid}/{title}/{artist}/{track_id}",
+         path: "/api/tracks/add/{oid}/{title}/{artist}/{track_id}",
          config: {
              // auth: {
              //     strategy: "session",
@@ -50,19 +50,54 @@
                      const artist = request.params.artist;
 
                      const track_id = request.params.track_id;
-
-
+                     console.log(track_id);
 
                      const res = await db.tracks.addTrack( { oid, title, artist, track_id } );
                      //return res.recordset[ 0 ];
                      return "POST Return Hit!";
                  } catch ( err ) {
                      server.log( [ "error", "api", "track" ], err );
-                     return boom.boomify( err );
+                     return console.log(err);
                  }
              }
          }
      } );
+
+     server.route( {
+           method: "PUT",
+           path: "/api/tracks/update/{oid}/{title}/{artist}/{track_id}",
+           config: {
+               // auth: {
+               //     strategy: "session",
+               //     mode: "required"
+               // },
+               handler: async request => {
+                   try {
+                       const db = request.server.plugins.sql.client;
+                       console.log("handler within PUT reached");
+                       //const userId = request.auth.credentials.profile.id;
+                       console.log(request.payload);
+                      // const { title, artist } = request.payload;
+                       console.log("==Reached post==");
+                       const oid = request.params.oid;
+                       console.log("OID: " + oid);
+                       const title = request.params.title;
+                       console.log("Title: " + title)
+                       const artist = request.params.artist;
+
+                       const track_id = request.params.track_id;
+                       console.log(track_id);
+
+                       const res = await db.tracks.updateTrack( { oid, title, artist, track_id } );
+                       //return res.recordset[ 0 ];
+                       return "POST Return Hit!";
+                   } catch ( err ) {
+                       server.log( [ "error", "api", "track" ], err );
+                       return console.log("ERROR: " + err);
+                   }
+               }
+           }
+       } );
 
      server.route( {
          method: "DELETE",

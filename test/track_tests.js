@@ -2,16 +2,16 @@ var should = require('chai').should(),
     expect = require('chai').expect,
     supertest = require('supertest'),
     api = supertest('http://localhost:3000');
-    console.log("API var:" + api);
-describe('User', function () {
 
+describe('User', function () {
+    console.log("API var:" + api);
     var location1;
     var location2;
     var location3;
     var locations = [location1, location2, location3];
 
     before(function (done) {
-
+        
         api.post('/api/tracks/add/22/null/null/null')
             .set('Accept', 'application/x-www-form-urlencoded')
             .send({
@@ -23,7 +23,7 @@ describe('User', function () {
             .expect('Content-Type', /json/)
             .expect(200)
             .end(function (err, res) {
-                location1 = res.body;
+                //location1 = res.body.payload;
                 console.log("ERROR: " + err);
                 console.log("location1: " + location1);
             });
@@ -62,9 +62,10 @@ describe('User', function () {
     });
 
     it('should return a 200 response', function (done) {
-        api.get('/api/tracks/')
+        api.get('/api/tracks/2')
             .set('Accept', 'application/json')
             .expect(200, done);
+            done();
             console.log("It Description reached...")
     });
     //

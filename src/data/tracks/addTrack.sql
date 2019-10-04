@@ -1,7 +1,3 @@
-declare @oid nchar(10)
-declare @title NVARCHAR(MAX)
-declare @artist NVARCHAR(MAX)
-declare @track_id nchar(10)
 INSERT INTO [FlexTest].[dbo].[tracks]
 (
    [oid]

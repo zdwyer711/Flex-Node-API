@@ -38,11 +38,21 @@
              handler: async request => {
                  try {
                      const db = request.server.plugins.sql.client;
+                     console.log("handler within POST reached");
                      //const userId = request.auth.credentials.profile.id;
                      console.log(request.payload);
-                     const { title, artist } = request.payload;
+                    // const { title, artist } = request.payload;
+                     console.log("==Reached post==");
                      const oid = request.params.oid;
-                     const track_id = request.params.tracl_id;
+                     console.log("OID: " + oid);
+                     const title = request.params.title;
+                     console.log("Title: " + title)
+                     const artist = request.params.artist;
+
+                     const track_id = request.params.track_id;
+
+
+
                      const res = await db.tracks.addTrack( { oid, title, artist, track_id } );
                      //return res.recordset[ 0 ];
                      return "POST Return Hit!";

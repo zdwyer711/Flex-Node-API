@@ -1,7 +1,8 @@
 var should = require('chai').should(),
     expect = require('chai').expect,
     supertest = require('supertest'),
-    api = supertest('http://localhost:3000');
+    api = supertest('http://localhost:3000'),
+    app = require('../src/index');
 
 describe('User', function () {
     console.log("API var:" + api);
@@ -10,23 +11,21 @@ describe('User', function () {
     var location3;
     var locations = [location1, location2, location3];
 
+    console.log("Var app: " + app);
+
     before(function (done) {
-        
-        api.post('/api/tracks/add/22/null/null/null')
-            .set('Accept', 'application/x-www-form-urlencoded')
-            .send({
-                oid: 77,
-                title: "Upset",
-                artist: "Drake",
-                track_id: 1
-            })
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .end(function (err, res) {
-                //location1 = res.body.payload;
-                console.log("ERROR: " + err);
-                console.log("location1: " + location1);
-            });
+        try {
+          app.startServer
+          done();
+        }
+        catch(err){
+          console.log("ERROR: " + err);
+          return "Error encountered on server start: " + err;
+        }
+
+        // .then(() => {
+        //     done();
+        // });
 
 
         // api.post('/locations')
@@ -64,10 +63,32 @@ describe('User', function () {
     it('should return a 200 response', function (done) {
         api.get('/api/tracks/2')
             .set('Accept', 'application/json')
-            .expect(200, done);
-            done();
+            .expect('POST Return Hit!')
+            .expect(200)
             console.log("It Description reached...")
+            done();
     });
+
+     it('should insert a new track', function (done) {
+    api.post('/api/tracks/add/')
+        .set('Accept', 'application/x-www-form-urlencoded')
+        .send({
+            oid: 77,
+            title: "Upset",
+            artist: "Drake",
+            track_id: 1
+        })
+        .expect('Content-Type', /json/)
+        .expect('POST Return Hit!')
+        .expect(200)
+        .end(function (err, res) {
+            //location1 = res.body.payload;
+            console.log("ERROR: " + err);
+            console.log("location1: " + location1);
+            });
+            done();
+        });
+
     //
     // it('should be an object with keys and values', function (done) {
     //     api.get('/users/1')

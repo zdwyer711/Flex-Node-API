@@ -1,11 +1,12 @@
 "use strict";
 
+
    module.exports.register = async server => {
    server.route( {
        method: "GET",
        path: "/api/tracks/{oid}",
        config: {
-           handler: async request => {
+           handler: async (request, response) => {
                try {
                    // get the sql client registered as a plugin
                    const db = request.server.plugins.sql.client;
@@ -54,10 +55,10 @@
 
                      const res = await db.tracks.addTrack( { oid, title, artist, track_id } );
                      //return res.recordset[ 0 ];
-                     return "POST Return Hit!";
+                     return res.recordset[0];
                  } catch ( err ) {
                      server.log( [ "error", "api", "track" ], err );
-                     return console.log(err);
+                     return console.log("ERROR: " + err);
                  }
              }
          }
@@ -86,11 +87,11 @@
                        const artist = request.params.artist;
 
                        const track_id = request.params.track_id;
-                       console.log(track_id);
+                       console.log("Track id: " + track_id);
 
                        const res = await db.tracks.updateTrack( { oid, title, artist, track_id } );
-                       //return res.recordset[ 0 ];
-                       return "POST Return Hit!";
+                       return res.recordset[ 0 ];
+                       //return "POST Return Hit!";
                    } catch ( err ) {
                        server.log( [ "error", "api", "track" ], err );
                        return console.log("ERROR: " + err);

@@ -62,7 +62,7 @@ describe('User', function () {
 
     it('should return a 200 response', function (done) {
         api.get('/api/tracks/2')
-            .set('Accept', 'application/json')
+            .set('Accept', 'nodeDbConnector/json')
             .expect('POST Return Hit!')
             .expect(200)
             console.log("It Description reached...")
@@ -89,23 +89,57 @@ describe('User', function () {
             done();
         });
 
-    //
-    // it('should be an object with keys and values', function (done) {
-    //     api.get('/users/1')
-    //         .set('Accept', 'application/json')
-    //         .expect(200)
-    //         .end(function (err, res) {
-    //             expect(res.body).to.have.property("name");
-    //             expect(res.body.name).to.not.equal(null);
-    //             expect(res.body).to.have.property("email");
-    //             expect(res.body.email).to.not.equal(null);
-    //             expect(res.body).to.have.property("phoneNumber");
-    //             expect(res.body.phoneNumber).to.not.equal(null);
-    //             expect(res.body).to.have.property("role");
-    //             expect(res.body.role).to.not.equal(null);
-    //             done();
-    //         });
-    // });
+        // it('should return our inserted song', function (done) {
+        //     const res = api.get('/api/tracks/77')
+        //         .set('Accept', 'application/json')
+        //         .expect('POST Return Hit!')
+        //         .expect(200)
+        //         .expect(res).to.have.property("title");
+        //         //.end(function (err, res){
+        //           //   expect(res.recordset).to.have.property("oid");
+        //         //   expect(res.parms.oid).to.not.equal(null);
+        //         //   console.log("Line 120: " + res);
+        //         //   expect(res.body).to.have.property("title");
+        //         //   expect(res.body.title).to.not.equal(null);
+        //         //   expect(res.body).to.have.property("artist");
+        //         //   expect(res.body.artist).to.not.equal(null);
+        //         //   expect(res.body).to.have.property("track_id");
+        //         //   expect(res.body.track_id).to.not.equal(null);
+        //         //
+        //         //     console.log("Error: " + err);
+        //         //     console.log("Line 102: " + res);
+        //         //});
+        //           console.log("RES: " + res);
+        //           done();
+        //
+        //
+        // });
+
+
+    it('should return the contents of track oid 77', (done) => {
+        const res = api.get('api/tracks/77')
+            .then((res) => {
+              const body = res.body;
+            })
+            // .set('Accept', 'application/json')
+            // .expect(200)
+
+            // .end(function (err, res) {
+            //     expect(res.recordset).to.have.property("oid");
+            //     expect(res.body).to.not.equal(null);
+            //     console.log("Line 120: " + res);
+            //     // expect(res.body).to.have.property("title");
+            //     // expect(res.body.title).to.not.equal(null);
+            //     // expect(res.body).to.have.property("artist");
+            //     // expect(res.body.artist).to.not.equal(null);
+            //     // expect(res.body).to.have.property("track_id");
+            //     // expect(res.body.track_id).to.not.equal(null);
+            //     done();
+            // });
+    });
+
+
+
     //
     // it('should have a 10 digit phone number', function (done) {
     //     api.get('/users/1')

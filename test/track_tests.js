@@ -1,7 +1,7 @@
 var should = require('chai').should(),
     expect = require('chai').expect,
     supertest = require('supertest'),
-    api = supertest('http://localhost:3000'),
+    api = supertest('http://localhost:8080'),
     app = require('../src/index');
 
 describe('User', function () {
@@ -13,52 +13,55 @@ describe('User', function () {
 
     console.log("Var app: " + app);
 
-    before(function (done) {
-        try {
-          app.startServer
-          done();
-        }
-        catch(err){
-          console.log("ERROR: " + err);
-          return "Error encountered on server start: " + err;
-        }
-
-        // .then(() => {
-        //     done();
-        // });
-
-
-        // api.post('/locations')
-        //     .set('Accept', 'application/x-www-form-urlencoded')
-        //     .send({
-        //         addressStreet: "222 Main St",
-        //         addressCity: "Portland",
-        //         addressState: "OR",
-        //         addressZip: "97209",
-        //         userId: 2
-        //     })
-        //     .expect('Content-Type', /json/)
-        //     .expect(200)
-        //     .end(function (err, res) {
-        //         location2 = res.body;
-        //     });
-        //
-        // api.post('/locations')
-        //     .set('Accept', 'application/x-www-form-urlencoded')
-        //     .send({
-        //         addressStreet: "333 Main St",
-        //         addressCity: "Portland",
-        //         addressState: "OR",
-        //         addressZip: "97209",
-        //         userId: 3
-        //     })
-        //     .expect('Content-Type', /json/)
-        //     .expect(200)
-        //     .end(function (err, res) {
-        //         location3 = res.body;
-        //         done();
-        //     });
-    });
+     before(function (done) {
+            setTimeout(serverStarted,3000);
+    //     try {
+    //       app.startServer
+    //       done();
+    //     }
+    //     catch(err){
+    //       console.log("ERROR: " + err);
+    //       return "Error encountered on server start: " + err;
+    //     }
+    //
+    //     // .then(() => {
+    //     //     done();
+    //     // });
+    //
+    //
+    //     // api.post('/locations')
+    //     //     .set('Accept', 'application/x-www-form-urlencoded')
+    //     //     .send({
+    //     //         addressStreet: "222 Main St",
+    //     //         addressCity: "Portland",
+    //     //         addressState: "OR",
+    //     //         addressZip: "97209",
+    //     //         userId: 2
+    //     //     })
+    //     //     .expect('Content-Type', /json/)
+    //     //     .expect(200)
+    //     //     .end(function (err, res) {
+    //     //         location2 = res.body;
+    //     //     });
+    //     //
+    //     // api.post('/locations')
+    //     //     .set('Accept', 'application/x-www-form-urlencoded')
+    //     //     .send({
+    //     //         addressStreet: "333 Main St",
+    //     //         addressCity: "Portland",
+    //     //         addressState: "OR",
+    //     //         addressZip: "97209",
+    //     //         userId: 3
+    //     //     })
+    //     //     .expect('Content-Type', /json/)
+    //     //     .expect(200)
+    //     //     .end(function (err, res) {
+    //     //         location3 = res.body;
+                function serverStarted(){
+                    done();
+                }
+    //     //     });
+   });
 
     it('should return a 200 response', function (done) {
         api.get('/api/tracks/2')
@@ -70,14 +73,14 @@ describe('User', function () {
     });
 
      it('should insert a new track', function (done) {
-    api.post('/api/tracks/add/')
+    api.post('/api/tracks/add/77/Upset/Drake/1')
         .set('Accept', 'application/x-www-form-urlencoded')
-        .send({
-            oid: 77,
-            title: "Upset",
-            artist: "Drake",
-            track_id: 1
-        })
+        // .send({
+        //     oid: 77,
+        //     title: "Upset",
+        //     artist: "Drake",
+        //     track_id: 1
+        // })
         .expect('Content-Type', /json/)
         .expect('POST Return Hit!')
         .expect(200)
@@ -116,30 +119,56 @@ describe('User', function () {
         // });
 
 
-    it('should return the contents of track oid 77', (done) => {
-        const res = api.get('api/tracks/77')
-            .then((res) => {
-              const body = res.body;
+    it('should return the contents of track oid 77',  function(done){
+      //  const res = api.get('api/tracks/77')
+           api.get('api/tracks/77')
+           .then(response => {
+                assert(response.body.oid, '77')
             })
+          //  .then((res) => {
+          //   const body = res.body;
+          //})
             // .set('Accept', 'application/json')
-            // .expect(200)
+            //    .expect(200)
 
-            // .end(function (err, res) {
-            //     expect(res.recordset).to.have.property("oid");
-            //     expect(res.body).to.not.equal(null);
-            //     console.log("Line 120: " + res);
-            //     // expect(res.body).to.have.property("title");
-            //     // expect(res.body.title).to.not.equal(null);
-            //     // expect(res.body).to.have.property("artist");
-            //     // expect(res.body.artist).to.not.equal(null);
-            //     // expect(res.body).to.have.property("track_id");
-            //     // expect(res.body.track_id).to.not.equal(null);
-            //     done();
-            // });
+            //    .end(function (err, res) {
+            //        expect(res).to.not.equal(null);
+            //        expect(res).to.not.equal(undefined);
+            //        console.log(res);
+            // //     expect(res.recordset).to.have.property("oid");
+            // //     expect(res.body).to.not.equal(null);
+            // //     console.log("Line 120: " + res);
+            // //     // expect(res.body).to.have.property("title");
+            // //     // expect(res.body.title).to.not.equal(null);
+            // //     // expect(res.body).to.have.property("artist");
+            // //     // expect(res.body.artist).to.not.equal(null);
+            // //     // expect(res.body).to.have.property("track_id");
+            // //     // expect(res.body.track_id).to.not.equal(null);
+                    done();
+            //    });
     });
 
+    it('should insert a new track', function (done) {
+   api.delete('/api/tracks/77')
+       .set('Accept', 'application/x-www-form-urlencoded')
+       // .send({
+       //     oid: 77,
+       //     title: "Upset",
+       //     artist: "Drake",
+       //     track_id: 1
+       // })
+       .expect('Content-Type', /json/)
+       .expect('Delete Return Hit!')
+       .expect(200)
+       .end(function (err, res) {
+           //location1 = res.body.payload;
+           console.log("ERROR: " + err);
+           console.log("location1: " + location1);
+           });
+           done();
+       });
 
-
+    
     //
     // it('should have a 10 digit phone number', function (done) {
     //     api.get('/users/1')

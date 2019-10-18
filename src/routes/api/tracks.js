@@ -125,7 +125,7 @@
                      console.log("RES: " + res);
                      //const resultRows = res.rowsAffected[ 0 ];
                      if(typeof resultRows == 'undefined' || resultRows == undefined){console.log("resultRows = undfined");}
-                     return "Return Hit!";
+                     return "Delete Return Hit!";
                      //return res.rowsAffected[ 0 ] === 1 ? "" : boom.notFound();
                  } catch ( err ) {
                     console.log("ERROR: " + err);

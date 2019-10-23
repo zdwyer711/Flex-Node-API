@@ -1,6 +1,7 @@
 "use strict";
 
 const tracks = require( "./tracks" );
+const trackArtwork = require( "./trackArtwork" );
 const sql = require( "mssql" );
 
 const client = async ( server, config ) => {
@@ -54,7 +55,8 @@ const client = async ( server, config ) => {
    // this is the API the client exposes to the rest
    // of the application
    return {
-       tracks: await tracks.register( { sql, getConnection } )
+       tracks: await tracks.register( { sql, getConnection } ),
+       trackArtwork: await trackArtwork.register( { sql, getConnection } )
    };
 };
 

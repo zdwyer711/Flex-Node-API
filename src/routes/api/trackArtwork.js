@@ -6,13 +6,19 @@
   server.route( {
         method: "POST",
         path: "/api/trackArtwork/",
-        handler: async (request, h) => {
+        config: {
+              payload: {
+                      output: 'stream',
+                      allow: 'multipart/form-data' // important
+              }
+        },
+        handler: async (request, reply) => {
                 try {
                     console.log("handler request reached!")
                     const { payload } = request
                     console.log("Payload reached!")
                     //const file = request.files;
-                    const response = handleTrackArtworkUpload(payload.file)
+                    //const response = handleTrackArtworkUpload(payload.file)
                     console.log("Response reached!")
 
                     //return res.recordset[0];

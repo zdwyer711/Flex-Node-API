@@ -37,17 +37,27 @@
   server.route({
   path: '/upload',
   method: 'POST',
-  options: {
-    payload: {
-      output: 'stream',
-       'Content-Type': undefined
-    }
-  },
-  handler: async (req, h) => {
+  config: {
+       payload: {
+           output: "stream",
+           parse: true,
+           allow: "multipart/form-data",
+           //maxBytes: 2 * 1000 * 1000
+       }
+   },
+  handler: function(request, h) {
     console.log("handler in track artwork reached.")
-    const { payload } = req
-    const response = handleFileUpload(payload.file)
-    return response
+    return new Promise((resolve, reject) => {
+      fs.writeFile('./trackArtwork/test.png', file, err => {
+         if (err) {
+           reject(err)
+         }
+         resolve({ message: 'Upload successfully!' })
+      })
+    })
+    // const { payload } = req
+    // const response = handleFileUpload(payload.file)
+    // return response
   }
 })
 

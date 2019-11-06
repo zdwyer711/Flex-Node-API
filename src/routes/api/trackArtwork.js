@@ -37,12 +37,17 @@
   server.route({
   path: '/upload',
   method: 'POST',
-  config: {
+  options: {
+       log: {
+         collect: true
+       },
        payload: {
            output: "stream",
-           parse: true,
-           allow: "multipart/form-data",
-           //maxBytes: 2 * 1000 * 1000
+          //multipart: true,
+          // parse: true,
+           allow: ["Application/json",'application/json', 'multipart/form-data', 'image/jpeg', 'application/pdf', 'application/x-www-form-urlencoded'],
+          // maxBytes: 2 * 1000 * 1000,
+          // timeout: false
        }
    },
   handler: function(request, h) {

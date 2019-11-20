@@ -42,12 +42,13 @@
          collect: true
        },
        payload: {
-           output: "stream",
-          //multipart: true,
-          // parse: true,
-           allow: ["Application/json",'application/json', 'multipart/form-data', 'image/jpeg', 'application/pdf', 'application/x-www-form-urlencoded'],
-          // maxBytes: 2 * 1000 * 1000,
-          // timeout: false
+            output: "stream",
+            //multipart: true,
+            uploads: "C:\\Users\\18152\\Desktop\\projects\\nodeDbconnector",
+            // parse: true,
+            allow: ["Application/json",'application/json', 'multipart/form-data', 'image/jpeg', 'application/pdf', 'application/x-www-form-urlencoded'],
+            // maxBytes: 2 * 1000 * 1000,
+            timeout: false
        }
    },
   handler: function(request, h) {

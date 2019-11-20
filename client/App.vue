@@ -2,7 +2,22 @@
  <div id="app">
    <h1>{{ msg }}</h1>
    <div class="row" id="eventList">
-       <h2>Event List</h2>
+     <h2>Image Upload Test</h2>
+     <form class="form-horizontal" role="form" method="post" action="/api/v1/upload" enctype="multipart/form-data">
+                    <div class="form-group">
+                       <label for="image" class="col-md-3 control-label">Profile Image</label>
+                       <div class="col-sm-9">
+                           <input class="form-control" type="file" name="profile" accept=""/>
+                       </div>
+                   </div>
+                   <div class="form-group">
+                       <!-- Button -->
+                       <div class="col-md-offset-3 col-md-9">
+                           <button id="btn-signup" type="submit" class="btn btn-info"><i class="icon-hand-right"></i> &nbsp Upload</button>
+                       </div>
+                   </div>
+               </form>
+    <!--   <h2>Event List</h2>
        <table v-if="hasEvents">
            <thead>
                <tr>
@@ -25,7 +40,7 @@
                </tr>
            </tbody>
        </table>
-       <p v-if="noEvents">No events yet!</p>
+       <p v-if="noEvents">No events yet!</p> -->
    </div>
    <div class="row" id="eventEdit">
        <h2>Add an Event</h2>

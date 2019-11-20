@@ -9,7 +9,7 @@ module.exports.register = async server => {
 
    // register authentication routes
    await auth.register( server );
-
+   
    // home page route
    server.route( {
        method: "GET",
@@ -44,6 +44,7 @@ module.exports.register = async server => {
            }
        }
    } );
+
 
    // server.route( {
    //     method: "DELETE",

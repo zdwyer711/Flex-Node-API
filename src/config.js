@@ -15,6 +15,11 @@ const { PORT,
    SQL_DATABASE,
    SQL_USER,
    SQL_PASSWORD,
+   MYSQL_HOST,
+   MYSQL_USER,
+   MYSQL_PASSWORD,
+   MYSQL_DATABASE,
+   MYSQL_PORT,
    OKTA_ORG_URL,
    OKTA_CLIENT_ID,
    OKTA_CLIENT_SECRET
@@ -49,6 +54,13 @@ module.exports = {
        options: {
            encrypt: sqlEncrypt
        }
+   },
+   mysql: {
+     host: MYSQL_HOST,
+     user: MYSQL_USER,
+     password: MYSQL_PASSWORD,
+     database: MYSQL_DATABASE,
+     port: MYSQL_PORT,
    },
    okta: {
        url: OKTA_ORG_URL,

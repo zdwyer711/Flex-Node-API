@@ -2,8 +2,18 @@
 //var imageApp = express();
 const config = require( "./config" );
 const server = require( "./server" );
-const multer = require('multer');
-const mysql = require('mysql');
+// const multer = require('multer');
+// const mysql = require('mysql');
+
+
+var express = require('express')
+  , routes = express.Router()
+  , http = require('http')
+  , path = require('path')
+  , app = express()
+  , multer = require('multer')
+  , mysql      = require('mysql')
+  , bodyParser=require("body-parser");
 
 const startServer = async () => {
    try {
@@ -27,19 +37,26 @@ const startServer = async () => {
 
        const mySqlConnection = connection;
 
-       module.exports = {
-          mySqlConnection: mySqlConnection
-       };
-
        console.log("Connected to MySql Server!");
        console.log("============================");
        console.log( `Server running at http://${ config.host }:${ config.port }...` );
+       return mySqlConnection;
    } catch ( err ) {
        console.log( "startup error:", err );
    }
 };
 
-startServer();
+const mySqlConnection = startServer();
+
+// console.log("mySqlConnection: " + mySqlConnection);
+
+module.exports = {
+  mySqlConnection: mySqlConnection
+}
+
+
+
+
 
 
 

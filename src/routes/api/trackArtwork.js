@@ -6,6 +6,7 @@
 
   const index = require("../../index");
   const mySqlConnection = index.mySqlConnection;
+  const util = require('util');
   console.log("track Artwrok MySQLConnection: " + mySqlConnection);
   //const app = mysql_server.app;
   //const mySqlConnection = index.mySqlConnection;
@@ -34,17 +35,22 @@
                       output: 'stream',
                       //allow: 'multipart/form-data' // important
                       allow: ["Application/json",'application/json', 'multipart/form-data', 'image/jpeg', 'application/pdf', 'application/x-www-form-urlencoded'],
-                      timeout: false
+                      //timeout: false
               },
         },
         handler: {
-          file: function(req, h) {
+          file: async(req, h) => {
                        try {
                          console.log('file received');
-                         const { payload } = req;
-                         console.log("Request: " + payload);
-                         console.log("File: " + payload.file);
-                         var sql = "INSERT INTO `file`(`name`, `type`, `size`) VALUES ('" + req.file.filename + "', '"+req.file.mimetype+"', '"+req.file.size+"')";
+                         const { payload } = req.payload;
+                         console.log(req);
+                         console.log("Return the damn payload!" + req.payload.profile.Readable._data);
+                         //console.log("req: " + util.inspect(payload, {showHidden: false, depth: null}));
+                        // console.log("Hey douchebag you did it! " + payload.getOwnPropertyNames());
+                        // var object = JSON.parse(payload);
+                         // console.log("Request: " + req.payload);
+                         // console.log("File: " + h.File);
+                         var sql = "INSERT INTO `file`(`name`, `type`, `size`) VALUES ('" + payload.file.filename + "', '"+payload.file.mimetype+"', '"+payload.file.size+"')";
 
                          var query = mySqlConnection.query(sql, function(err, result) {
                                     console.log('inserted data');

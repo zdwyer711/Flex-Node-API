@@ -67,7 +67,32 @@
                          console.log("===========================");
                          console.dir(payload['profile']['hapi']['headers']);
                          console.log("===========================");
+                         console.dir(payload['profile']['hapi']['headers']['content-disposition']);
+                         console.log("===========================");
+                         console.dir(payload['profile']['hapi']['headers']['content-disposition']['form-data']);
+                         console.log("===========================");
+                         var fileNameRegEx = /filename="(.*?)"/g;
+                         var str = payload['profile']['hapi']['headers']['content-disposition'];
+                         console.dir(str);
+                         var result = fileNameRegEx.exec(str);
+                         var result2 = str.match(fileNameRegEx);
+                         console.dir(result2);
+                         console.log("=====================");
+                         console.log("Do I see a fileName!?");
+                         console.dir(result[1]);
+                         console.log("=====================");
+                         //var newstr = str.match('filename=(.*?)');
+                         console.dir(result);
+                         var fileName = result[0];
+                         var fileNameRegEx = /"(.*?)"/g;
+                         var fileName = fileNameRegEx.exec(fileName);
+                         console.log("=====================");
+                         console.dir(fileName);
+                         console.dir(fileName[1]);
+                         console.log("=====================");
+                         console.dir(payload['profile']['hapi']['headers']['content-type']);
                          //console.log("REQ Valus: " + Object.values(req));
+                         //console.dir(mySqlConnection);
                          var sql = "INSERT INTO `file`(`name`, `type`, `size`) VALUES ('" + payload['profile']['hapi']['filename'] + "', '"+ payload.file.mimetype+"', '"+payload.file.size+"')";
 
                          var query = mySqlConnection.query(sql, function(err, result) {

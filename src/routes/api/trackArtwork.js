@@ -42,15 +42,33 @@
           file: async(req, h) => {
                        try {
                          console.log('file received');
-                         const { payload } = req.payload;
-                         console.log(req);
-                         console.log("Return the damn payload!" + req.payload.profile.Readable._data);
-                         //console.log("req: " + util.inspect(payload, {showHidden: false, depth: null}));
+                         //const { payload } = req['payload'];
+                        // const { headers} = req['headers'];
+                        var payload = req['payload'];
+                         //console.log(req);
+                         console.dir(req);
+                         console.dir("GIVE ME MY DAMN PAYLOAD " + req['payload']);
+                         console.log(" ");
+                         console.log(req['payload']);
+                         console.log("===========================");
+                         console.dir(payload['profile']);
+                         //console.log("===========================");
+                         //console.dir(req['payload']['porfile']['Readable']['_readableState']['readableState']);
+                         //console.dir(req['payload']['porfile']['Readable']['_readableState']['readableState']);
+                         //console.log("Return the damn payload!" + req.payload.profile.Readable._data);
+                         //console.log("paylaod: " + util.inspect(payload, {showHidden: false, depth: null}));
                         // console.log("Hey douchebag you did it! " + payload.getOwnPropertyNames());
                         // var object = JSON.parse(payload);
                          // console.log("Request: " + req.payload);
                          // console.log("File: " + h.File);
-                         var sql = "INSERT INTO `file`(`name`, `type`, `size`) VALUES ('" + payload.file.filename + "', '"+payload.file.mimetype+"', '"+payload.file.size+"')";
+                         console.log("===========================");
+                         console.dir(payload['profile']['hapi']['filename']);
+                         console.log("===========================");
+                         console.log("===========================");
+                         console.dir(payload['profile']['hapi']['headers']);
+                         console.log("===========================");
+                         //console.log("REQ Valus: " + Object.values(req));
+                         var sql = "INSERT INTO `file`(`name`, `type`, `size`) VALUES ('" + payload['profile']['hapi']['filename'] + "', '"+ payload.file.mimetype+"', '"+payload.file.size+"')";
 
                          var query = mySqlConnection.query(sql, function(err, result) {
                                     console.log('inserted data');

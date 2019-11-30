@@ -10,7 +10,7 @@
   console.log("track Artwrok MySQLConnection: " + mySqlConnection);
   //const app = mysql_server.app;
   //const mySqlConnection = index.mySqlConnection;
-  const DIR = './uploads';
+  const DIR = '../../uploads';
 
   let storage = multer.diskStorage({
       destination: function (req, file, callback) {
@@ -105,9 +105,14 @@
                          console.log("File Size: " + (data.byteLength/1024));
                          //console.log("REQ Valus: " + Object.values(req));
                          //console.dir(mySqlConnection);
-                         var sql = "INSERT INTO `file`(`name`, `type`, `size`) VALUES ('" + fileName + "', '"+ mimeType +"', '"+ (data.byteLength/1024) +"')";
+                         fileName = JSON.stringify(fileName);
+                         mimeType = JSON.stringify(mimeType);
+                         var sql = "INSERT INTO `file`(`name`, `type`, `size`) VALUES ('" + fileName + "', '"+ mimeType +"', '"+ JSON.stringify((data.byteLength/1024)) +"')";
                          console.log(sql);
-                         var query = mySqlConnection.query(sql, function(err, result) {
+                         //console.dir(mySqlConnection);
+                         var query = db.query(sql, function(err, result) {
+                                    console.dir(err);
+                                    console.dir(result);
                                     console.log('inserted data');
                          });
 

@@ -34,8 +34,9 @@ const startServer = async () => {
         });
 
        connection.connect();
-
+       global.db = connection;
        const mySqlConnection = connection;
+       //console.dir(connection);
 
        console.log("Connected to MySql Server!");
        console.log("============================");

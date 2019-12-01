@@ -1,5 +1,6 @@
 "use strict";
 
+
  module.exports.register = async server => {
   const multer = require('multer');
   const fs = require('fs');
@@ -10,18 +11,25 @@
   console.log("track Artwrok MySQLConnection: " + mySqlConnection);
   //const app = mysql_server.app;
   //const mySqlConnection = index.mySqlConnection;
-  const DIR = '../../uploads';
+  const DIR = '../../../uploads/';
 
-  let storage = multer.diskStorage({
-      destination: function (req, file, callback) {
-        callback(null, DIR);
-      },
-      filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-      }
-  });
-  console.log("After let storage ");
-  let upload = multer({storage: storage});
+  // let storage = multer.diskStorage({
+  //     destination: function (req, file, callback) {
+  //       console.log("diskStorage Reached!");
+  //       callback(null, DIR);
+  //     },
+  //     filename: function (req, file, cb) {
+  //       console.log("storage reached!")
+  //       console.log("==================");
+  //       console.dir(file);
+  //       console.log("==================");
+  //       console.dir(req);
+  //       console.log("==================");
+  //       cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  //     }
+  // });
+  // console.log("After let storage ");
+  // let upload = multer({storage: storage});
 
   console.log("==========");
   console.log("mySqlConnection: " + index.mySqlConnection);
@@ -109,12 +117,30 @@
                          mimeType = JSON.stringify(mimeType);
                          var sql = "INSERT INTO `file`(`name`, `type`, `size`) VALUES ('" + fileName + "', '"+ mimeType +"', '"+ JSON.stringify((data.byteLength/1024)) +"')";
                          console.log(sql);
+                         console.log("====================");
+                         var contentType = payload['profile']['hapi']['headers']['content-type'];
+                         console.dir(contentType);
+                         console.log("====================");
+                         var encoding = payload['profile']['_encoding'];
+                         console.dir(encoding);
+                         var file = {
+                           fileName : fileName,
+                           mimeType : contentType,
+                           encoding : encoding,
+                           data : data,
+                         };
+                         console.log("======File Object=======");
+                         console.dir(file);
+                         const fileReturn = handleTrackArtworkUpload(file);
+                         //upload.single('test');
+                         console.log("After handleTrackArtworkUpload");
                          //console.dir(mySqlConnection);
                          var query = db.query(sql, function(err, result) {
                                     console.dir(err);
                                     console.dir(result);
                                     console.log('inserted data');
                          });
+
 
                        return "Track Artowork Success!";
                        } catch ( err ) {
@@ -158,6 +184,27 @@
 //   }
 // })
 
+
+  // let storage = multer.diskStorage({
+  //     destination: function (req, file, callback) {
+  //       console.log("diskStorage Reached!");
+  //       callback(null, DIR);
+  //     },
+  //     filename: function (req, file, cb) {
+  //       console.log("storage reached!")
+  //       console.log("==================");
+  //       console.dir(file);
+  //       console.log("==================");
+  //       console.dir(req);
+  //       console.log("==================");
+  //       cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  //     }
+  // });
+  // console.log("After let storage ");
+  // let upload = multer({storage: storage});
+
+
+
     server.route({
         method: 'GET',
         path: '/youngSoul.jpg',
@@ -166,45 +213,59 @@
         }
     });
 
-    const handleFileUpload = file => {
- return new Promise((resolve, reject) => {
-   fs.writeFile('./trackArtwork/test.png', file, err => {
-      if (err) {
-       reject(err)
-      }
-      resolve({ message: 'Upload successfully!' })
-   })
- })
-}
+//     const handleFileUpload = file => {
+//  return new Promise((resolve, reject) => {
+//    fs.writeFile('./trackArtwork/test.png', file, err => {
+//       if (err) {
+//        reject(err)
+//       }
+//       resolve({ message: 'Upload successfully!' })
+//    })
+//  })
+// }
 
     const handleTrackArtworkUpload = file => {
           return new Promise((resolve, reject) => {
           console.log("handleTrackArtworkUpload reached!");
-
-          if(file.mimetype === 'image/jpeg' || file.mimetype === 'img/png'){
-            const trackArtworkuploads = multer({
-                  storage: trackArtkworkStorage
-            });
-            const trackArtkworkStorage = multer.diskStorage({
-                  destination: function(file, cb){
-                      console.log("trackArtworkStorage Success!");
-                      cb(null,'./trackArtwork/');
-                  },
-                  filename: function(file, cb){
-                      cb(null, file.originalname)
-                    }
-            })
-            resolve({message: 'Upload successfully!'})
-          } else {
-              reject({message: 'unable to upload file!'})
-          }
-
-          // fs.writeFile('./trackArtwork/test.png', file, err => {
-          // if (err) {
-          //     reject(err)
+          console.dir(file.mimeType);
+          // if(file.mimeType == 'image/jpeg' || file.mimeType == 'img/png'){
+          //   console.log("handleTrackArtworkUpload conditional has been met!");
+          //   try {
+          //     const trackArtkworkStorage = multer.diskStorage({
+          //           destination: function(file, cb){
+          //               console.log("trackArtworkStorage Success!");
+          //               cb(null,'./trackArtwork/');
+          //           },
+          //           filename: function(file, cb){
+          //               cb(null, file.fileName)
+          //             }
+          //     })
+          //     const trackArtworkuploads = multer({
+          //           storage: trackArtkworkStorage
+          //     })
+          //     resolve({message: 'Upload successfully!'})
+          //   } catch(err){
+          //     console.log("ERROR Caught!");
+          //     console.dir(err);
+          //   }
+          //
+          // } else {
+          //     console.log("ERROR: Unable to upload file!");
+          //     reject({message: 'unable to upload file!'})
           // }
-          //     resolve({ message: 'Upload successfully!' })
-          // })
+          //let writeStream = fs.createWriteStream('testUpload.jpeg');
+
+        // write some data with a base64 encoding
+        //writeStream.write(file.data, file.encoding);
+
+          fs.writeFile('./trackArtwork/test.jpeg', file, err => {
+          if (err) {
+              console.log("ERROR")
+              console.dir(error);
+              reject(err)
+          }
+              resolve({ message: 'Upload successfully!' })
+          })
         })
       }
 

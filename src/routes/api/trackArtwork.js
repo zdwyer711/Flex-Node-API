@@ -141,7 +141,6 @@
                                     console.log('inserted data');
                          });
 
-
                        return "Track Artowork Success!";
                        } catch ( err ) {
                            server.log( [ "error", "api", "track" ], err );
@@ -257,11 +256,15 @@
 
         // write some data with a base64 encoding
         //writeStream.write(file.data, file.encoding);
-
-          fs.writeFile('./trackArtwork/test.jpeg', file, err => {
+          var name = file.fileName;
+          var groomedFileName = name.replace(/\"/g,"");
+          var fileDir = './trackArtwork/' + groomedFileName;
+          console.log("===================");
+          console.dir(fileDir);
+          fs.writeFile(fileDir, file.data, err => {
           if (err) {
               console.log("ERROR")
-              console.dir(error);
+              console.dir(err);
               reject(err)
           }
               resolve({ message: 'Upload successfully!' })

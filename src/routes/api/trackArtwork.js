@@ -4,68 +4,65 @@
   const multer = require('multer');
   const fs = require('fs');
 
-  // server.route( {
-  //       method: "POST",
-  //       path: "/api/trackArtwork/",
-  //        config: {
-  //             payload: {
-  //                     //output: 'stream',
-  //                     allow: 'multipart/form-data' // important
-  //             },
-  //       },
-  //       handler:  {
-  //                 file: function(reques, h) {
-  //                             try {
-  //                             console.log("handler request reached!")
-  //                             // const { payload } = request
-  //                             // console.log("Payload reached!")
-  //                             const data = h.file(request.payload);
-  //                             const file = data['trackArtwork'];
-  //                             //const file = request.files;
-  //                             //const response = handleTrackArtworkUpload(payload.file)
-  //                             console.log("Response reached!")
-  //                             //return res.recordset[0];
-  //                             return "Track Artowork Success!";
-  //                             } catch ( err ) {
-  //                                 server.log( [ "error", "api", "track" ], err );
-  //                                 return console.log("ERROR: " + err);
-  //                               }
-  //                   }
-  //                 }
-  //   } );
+  server.route( {
+        method: "POST",
+        path: "/api/v1/upload",
+         options: {
+              payload: {
+                      output: 'stream',
+                      allow: ["Application/json",'application/json', 'multipart/form-data', 'image/jpeg', 'application/pdf', 'application/x-www-form-urlencoded'],
+                      //timeout: false
+              },
+        },
+        handler: {
+          file: async(req, h) => {
+                       try {
+                             var payload = req['payload'];
 
-  server.route({
-  path: '/upload',
-  method: 'POST',
-  options: {
-       log: {
-         collect: true
-       },
-       payload: {
-            output: "stream",
-            //multipart: true,
-            uploads: "C:\\Users\\18152\\Desktop\\projects\\nodeDbconnector",
-            // parse: true,
-            allow: ["Application/json",'application/json', 'multipart/form-data', 'image/jpeg', 'application/pdf', 'application/x-www-form-urlencoded'],
-            // maxBytes: 2 * 1000 * 1000,
-            timeout: false
-       }
-   },
-  handler: function(request, h) {
-    console.log("handler in track artwork reached.")
-    return new Promise((resolve, reject) => {
-      fs.writeFile('./trackArtwork/test.png', file, err => {
-         if (err) {
-           reject(err)
-         }
-         resolve({ message: 'Upload successfully!' })
-      })
-    })
-    // const { payload } = req
-    // const response = handleFileUpload(payload.file)
-    // return response
-  }
-})
+                             var fileNameRegEx = /filename="(.*?)"/g;
+                             var contentDispo = payload['profile']['hapi']['headers']['content-disposition'];
+                             var result = fileNameRegEx.exec(contentDispo);
+
+                             var fileName = result[1];
+                             var mimeType = req['mime'];
+                             var data = payload['profile']['_data'];
+
+                             var groomedFileName = fileName.replace(/\"/g,"");
+                             var fileDir = './trackArtwork/' + groomedFileName;
+                             var groomedMimetype = mimeType.replace(/\"/g,"");
+                             var fileDir = './trackArtwork/' + groomedMimetype
+
+                             var sql = "INSERT INTO `file`(`name`, `type`, `size`) VALUES ('" + groomedFileName + "', '"+ groomedMimetype +"', '"+ JSON.stringify((data.byteLength/1024)) +"')";
+
+                             var contentType = payload['profile']['hapi']['headers']['content-type'];
+                             var encoding = payload['profile']['_encoding'];
+
+                             var file = {
+                               fileName : fileName,
+                               mimeType : contentType,
+                               encoding : encoding,
+                               data : data,
+                             };
+                             console.log("======File Object=======");
+                             console.dir(file);
+                             const fileReturn = handleTrackArtworkUpload(file);
+
+                             var query = db.query(sql, function(err, result) {
+                                        if(err){
+                                          console.dir("ERROR: " + err);
+                                        } else {
+                                          console.log('inserted data');
+                                        }
+                             });
+                           console.log("before succesfull return!");
+                           return "Track Artowork Success!";
+                           } catch ( err ) {
+                               server.log( [ "error", "api", "track" ], err );
+                               return console.log("ERROR: " + err);
+                           }
+             }
+        }
+    } );
 
     server.route({
         method: 'GET',
@@ -75,46 +72,19 @@
         }
     });
 
-    const handleFileUpload = file => {
- return new Promise((resolve, reject) => {
-   fs.writeFile('./trackArtwork/test.png', file, err => {
-      if (err) {
-       reject(err)
-      }
-      resolve({ message: 'Upload successfully!' })
-   })
- })
-}
-
     const handleTrackArtworkUpload = file => {
           return new Promise((resolve, reject) => {
-          console.log("handleTrackArtworkUpload reached!");
-
-          if(file.mimetype === 'image/jpeg' || file.mimetype === 'img/png'){
-            const trackArtworkuploads = multer({
-                  storage: trackArtkworkStorage
-            });
-            const trackArtkworkStorage = multer.diskStorage({
-                  destination: function(file, cb){
-                      console.log("trackArtworkStorage Success!");
-                      cb(null,'./trackArtwork/');
-                  },
-                  filename: function(file, cb){
-                      cb(null, file.originalname)
-                    }
-            })
-            resolve({message: 'Upload successfully!'})
-          } else {
-              reject({message: 'unable to upload file!'})
-          }
-
-          // fs.writeFile('./trackArtwork/test.png', file, err => {
-          // if (err) {
-          //     reject(err)
-          // }
-          //     resolve({ message: 'Upload successfully!' })
-          // })
+          var name = file.fileName;
+          var groomedFileName = file.fileName.replace(/\"/g,"");
+          var fileDir = './trackArtwork/' + groomedFileName;
+          fs.writeFile(fileDir, file.data, err => {
+              if (err) {
+                  console.dir("ERROR" + err);
+                  reject(err)
+              } else {
+                    resolve({ message: 'Upload successfully!' })
+              }
+          })
         })
       }
-
 };

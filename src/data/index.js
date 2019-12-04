@@ -1,7 +1,6 @@
 "use strict";
 
 const tracks = require( "./tracks" );
-const trackArtwork = require( "./trackArtwork" );
 const sql = require( "mssql" );
 
 const client = async ( server, config ) => {
@@ -44,7 +43,7 @@ const client = async ( server, config ) => {
            } );
            return pool;
        } catch ( err ) {
-          console.log(err)
+          console.dir("Error " + err)
            // error connecting to SQL Server
            server.log( [ "error", "data" ], "error connecting to sql server" );
            server.log( [ "error", "data" ], err );
@@ -56,7 +55,6 @@ const client = async ( server, config ) => {
    // of the application
    return {
        tracks: await tracks.register( { sql, getConnection } ),
-       trackArtwork: await trackArtwork.register( { sql, getConnection } )
    };
 };
 

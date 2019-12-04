@@ -5,7 +5,6 @@ const utils = require( "../utils" );
 const register = async ( { sql, getConnection } ) => {
    // read in all the .sql files for this folder
    const sqlQueries = await utils.loadSqlQueries( "tracks" );
-   console.log("sqlQueries from tracks: " + sqlQueries);
    const getTracks = async oid => {
        // get a connection to SQL Server
        const cnx = await getConnection();

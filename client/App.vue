@@ -17,6 +17,22 @@
                        </div>
                    </div>
                </form>
+               <br/>
+               <br/>
+               <form class="form-horizontal" role="form" method="post" action="/api/v1/tracksUpload" enctype="multipart/form-data">
+                              <div class="form-group">
+                                 <label for="image" class="col-md-3 control-label">Track Upload</label>
+                                 <div class="col-sm-9">
+                                     <input class="form-control" type="file" name="profile" accept=""/>
+                                 </div>
+                             </div>
+                             <div class="form-group">
+                                 <!-- Button -->
+                                 <div class="col-md-offset-3 col-md-9">
+                                     <button id="btn-signup" type="submit" class="btn btn-info"><i class="icon-hand-right"></i> &nbsp Upload</button>
+                                 </div>
+                             </div>
+                         </form>
     <!--   <h2>Event List</h2>
        <table v-if="hasEvents">
            <thead>

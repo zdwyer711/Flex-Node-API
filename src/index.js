@@ -5,15 +5,8 @@ const server = require( "./server" );
 // const multer = require('multer');
 // const mysql = require('mysql');
 
-
-var express = require('express')
-  , routes = express.Router()
-  , http = require('http')
-  , path = require('path')
-  , app = express()
-  , multer = require('multer')
-  , mysql      = require('mysql')
-  , bodyParser=require("body-parser");
+const {MongoClient} = require('mongodb');
+var mysql = require('mysql');
 
 const startServer = async () => {
    try {
@@ -36,23 +29,41 @@ const startServer = async () => {
        connection.connect();
        global.db = connection;
        const mySqlConnection = connection;
-       //console.dir(connection);
-
+       console.log("============================");
+       console.dir(config.mongodb.uri);
+       const client = new MongoClient(config.mongodb.uri);
+       // /**
+       // * Connect Mongo Driver to MongoDB.
+       // */
+       // var mongoDatabase;
+       // MongoClient.connect('mongodb://localhost/FlexDb', (err, database) => {
+       //   if (err) {
+       //     console.log('MongoDB Connection Error. Please make sure that MongoDB is running.');
+       //     process.exit(1);
+       //   }else {
+       //     mongoDatabase = database;
+       //     console.log("============================");
+       //     console.log("Connected to MongoDb boi!");
+       //     console.log("============================");
+       //   }
+       // });
        console.log("Connected to MySql Server!");
        console.log("============================");
        console.log( `Server running at http://${ config.host }:${ config.port }...` );
-       return mySqlConnection;
+       return client;
    } catch ( err ) {
        console.log( "startup error:", err );
    }
 };
 
-const mySqlConnection = startServer();
+const client = startServer();
 
 // console.log("mySqlConnection: " + mySqlConnection);
 
+// console.dir(mongoDatabase);
+
 module.exports = {
-  mySqlConnection: mySqlConnection
+  client: client
 }
 
 

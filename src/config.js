@@ -20,6 +20,7 @@ const { PORT,
    MYSQL_PASSWORD,
    MYSQL_DATABASE,
    MYSQL_PORT,
+   MONGO_URI,
    OKTA_ORG_URL,
    OKTA_CLIENT_ID,
    OKTA_CLIENT_SECRET
@@ -61,6 +62,9 @@ module.exports = {
      password: MYSQL_PASSWORD,
      database: MYSQL_DATABASE,
      port: MYSQL_PORT,
+   },
+   mongodb: {
+      uri: MONGO_URI,
    },
    okta: {
        url: OKTA_ORG_URL,

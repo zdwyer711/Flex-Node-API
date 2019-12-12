@@ -7,6 +7,8 @@ const server = require( "./server" );
 
 const {MongoClient} = require('mongodb');
 var mysql = require('mysql');
+const mongodb = require('mongodb');
+var mongoDbConnection;
 
 const startServer = async () => {
    try {
@@ -31,7 +33,25 @@ const startServer = async () => {
        const mySqlConnection = connection;
        console.log("============================");
        console.dir(config.mongodb.uri);
-       const client = new MongoClient(config.mongodb.uri);
+       const client = new MongoClient(config.mongodb.uri, {native_parser: true, useUnifiedTopology: true });
+       console.log("==========Client Obj in Index==================");
+       console.dir(client);
+       console.log("============================");
+       client.connect(function(error, database) {
+           if(error){
+             console.log("Error Conditional Reached within Connect");
+             throw error;
+           }
+           console.log("Mongo Client Connection Reached");
+           console.dir(database);
+           const dbName = "FlexDb"
+           const db = client.db(dbName);
+           global.mongoDbConnection = db;
+           console.log("========================");
+           //console.dir(db);
+           //mongoDbConnection = client.db(dbName);
+           return db;
+         });
        // /**
        // * Connect Mongo Driver to MongoDB.
        // */
@@ -47,6 +67,9 @@ const startServer = async () => {
        //     console.log("============================");
        //   }
        // });
+       console.log("Mongo Connection below");
+       console.dir(global.mongoDbConnection);
+       console.log("============================");
        console.log("Connected to MySql Server!");
        console.log("============================");
        console.log( `Server running at http://${ config.host }:${ config.port }...` );

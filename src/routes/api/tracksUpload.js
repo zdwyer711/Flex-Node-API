@@ -49,6 +49,7 @@
                              };
                              console.log("======File Object=======");
                              console.dir(file);
+                             //const fileReturn = index.handleTrackUpload(file);
                              const fileReturn = handleTrackUpload(file);
                              //
                              // var query = db.query(sql, function(err, result) {
@@ -87,9 +88,11 @@
               readableTrackStream.push(null);
               console.log("<----Mongo Connection Object---->")
               console.dir(client);
+              console.log("======================");
+              console.dir(client.MongoClient);
               client.connect(function(error) {
                   //assert.ifError(error);
-                  const dbName = FlexDb
+                  const dbName = "FlexDb"
                   const db = client.db(dbName);
 
                   var bucket = new mongodb.GridFSBucket(db);

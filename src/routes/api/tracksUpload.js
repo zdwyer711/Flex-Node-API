@@ -3,10 +3,12 @@
  module.exports.register = async server => {
   const fs = require('fs');
   const index = require("../../index");
-  const client = index.client;
+  const mongoDbConnectionPool = index.mongoDbConnectionPool;
   const { Readable } = require('stream');
   //const assert = require('assert');
   const mongodb = require('mongodb');
+  //var mongoUtil = require( 'mongoUtil' );
+
   server.route( {
         method: "POST",
         path: "/api/v1/tracksUpload",
@@ -50,6 +52,9 @@
                              console.log("======File Object=======");
                              console.dir(file);
                              //const fileReturn = index.handleTrackUpload(file);
+                             // var db = mongoUtil.getDb();
+                             console.log("======Mongo Db Object=======");
+                             console.dir(db1);
                              const fileReturn = handleTrackUpload(file);
                              //
                              // var query = db.query(sql, function(err, result) {
@@ -60,6 +65,7 @@
                              //            }
                              // });
                            console.dir("fileReturn: " + fileReturn);
+                           //console.dir(fileReturn);
                            console.log("before succesfull return!");
                            return "Track Artowork Success!";
                            } catch ( err ) {
@@ -81,48 +87,63 @@
     const handleTrackUpload = file => {
           var name = file.fileName;
           var groomedFileName = file.fileName.replace(/\"/g,"");
+          // var res;
           try {
               // Covert buffer to Readable Stream
               const readableTrackStream = new Readable();
               readableTrackStream.push(file.data);
               readableTrackStream.push(null);
-              console.log("<----Mongo Connection Object---->")
-              console.dir(client);
-              console.log("======================");
-              console.dir(client.MongoClient);
-              client.connect(function(error) {
+              console.log("<----Mongo Db Object in handlrackUpload---->")
+              console.dir(db1);
+            //  console.dir(client);
+              // console.log("======================");
+              // console.dir(client.MongoClient);
+              // if(typeof client == 'undefined' || client == undefined){console.log("UNDEFINED FOR OID");}
+              // else {
+              //
+              // }
+            //  client.connect(function(error) {
                   //assert.ifError(error);
-                  const dbName = "FlexDb"
-                  const db = client.db(dbName);
+                  //const dbName = "FlexDb"
+                  //const db1 = client.db(dbName);
+                  console.log("<------readableTrackStream--------->");
+                  console.dir(readableTrackStream);
+                  var bucket = new mongodb.GridFSBucket(db1, {
+                    bucketName: 'tracks'
+                  });
 
-                  var bucket = new mongodb.GridFSBucket(db);
-
-                  readableTrackStream.pipe(bucket.openUploadStream(groomedFileName)).
-                    on('error', function(error) {
-                      assert.ifError(error);
-                    }).
-                    on('finish', function() {
-                      console.log('done!');
-                      process.exit(0);
-                    });
-                });
+                  // readableTrackStream.pipe(bucket.openUploadStream(groomedFileName)).
+                  //   on('error', function(error) {
+                  //     assert.ifError(error);
+                  //   }).
+                  //   on('finish', function() {
+                  //     console.log('done!');
+                  //     //process.exit(0);
+                  //   });
+              //  });
               // let bucket = new mongodb.GridFSBucket(mongoConnection, {
               //   bucketName: 'tracks'
               // });
               //
-              // let uploadStream = bucket.openUploadStream(groomedFileName);
-              // let id = uploadStream.id;
-              // console.dir("mongo ID " + id);
-              // readableTrackStream.pipe(uploadStream);
-              //
-              // uploadStream.on('error', () => {
-              //   return res.status(500).json({ message: "Error uploading file" });
-              // });
-              //
-              // uploadStream.on('finish', () => {
-              //   return res.status(201).json({ message: "File uploaded successfully, stored under Mongo ObjectID: " + id });
-              // });
+              let uploadStream = bucket.openUploadStream(groomedFileName);
+              let id = uploadStream.id;
+              console.dir("mongo ID " + id);
+              const result = readableTrackStream.pipe(uploadStream);
+
+              uploadStream.on('error', () => {
+                console.log("UploadStream encounter an error!");
+                //return res.status(500).json({ message: "Error uploading file" });
+                return "ERROR Ecountered uploading track!";
+              });
+
+              uploadStream.on('finish', () => {
+              //  return status(201).json({ message: "File uploaded successfully, stored under Mongo ObjectID: " + id });
+              return "Fiile Uploaded Successfully!";
+              });
+
+              return result;
           } catch (e) {
+              console.log("<-------ERROR-------->");
               console.error(e);
           }
           //var fileDir = './trackUpload/' + groomedFileName;

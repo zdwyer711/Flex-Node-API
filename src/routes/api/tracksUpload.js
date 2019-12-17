@@ -6,6 +6,7 @@
   const mongoDbConnectionPool = index.mongoDbConnectionPool;
   const { Readable } = require('stream');
   const mongodb = require('mongodb');
+  const ObjectID = require('mongodb').ObjectID;
 
   server.route( {
         method: "POST",
@@ -53,13 +54,64 @@
 
                              console.dir("fileReturn: " + fileReturn);
                              console.log("before succesfull return!");
-                             return "Track Artowork Success!";
+                             return "Track Upload Success!";
                              } catch ( err ) {
                                server.log( [ "error", "api", "track" ], err );
                                return console.log("ERROR: " + err);
                              }
                            }
                          }
+    } );
+
+    server.route( {
+          method: "GET",
+          path: "/api/v1/tracks/{oid}",
+          handler: {
+            file: async(req, h) => {
+                         try {
+                               var data;
+                               try {
+                                      var trackID = new ObjectID(req.params.oid);
+                                      console.log("trackOid: " + trackID);
+                               } catch(err) {
+                                      //return h.status(400).json({ message: "Invalid trackID in URL parameter. Must be a single String of 12 bytes or a string of 24 hex characters" });
+                                      console.log("<----Error ecnountered Attempting to GET track----->");
+                                      console.dir(err);
+                               }
+                               //h.set('content-type', 'audio/mp3');
+                               //h.set('accept-ranges', 'bytes');
+
+                               let bucket = new mongodb.GridFSBucket(db2, {
+                                  bucketName: 'tracks'
+                                });
+
+                                let downloadStream = bucket.openDownloadStream(trackID);
+
+                                downloadStream.on('data', (chunk) => {
+                                    data = chunk;
+                                });
+
+                                downloadStream.on('error', () => {
+                                    console.log("Error encountered in downloadStream");
+                                });
+
+                                downloadStream.on('end', () => {
+                                    console.log("GET track complete!");
+                                    console.log("====================");
+                                    console.dir(data);
+                                    //return h.response(data).code(200);
+                                    //h.end();
+                                    //return data;
+                                });
+
+                               // return "Track GET Success!";
+                               } catch ( err ) {
+                                 server.log( [ "error", "api", "track" ], err );
+                                 console.log("ERROR: " + err);
+                                 //return h.status(401).json({ message: "Unable to return track"});
+                               }
+                             }
+                           }
     } );
 
     const handleTrackUpload = file => {

@@ -19,8 +19,6 @@ const startServer = async () => {
        // start the web server
        await app.start();
 
-       //console.log("Made it to startServer the mysql host is " + config.mysql.host)
-       console.log("============================");
        const connection = mysql.createConnection({
           host     : config.mysql.host,
           user     : config.mysql.user,
@@ -32,8 +30,6 @@ const startServer = async () => {
        connection.connect();
        global.db = connection;
        const mySqlConnection = connection;
-       console.log("============================");
-       console.dir(config.mongodb.uri);
 
        // First connection for slow operations
        const db1 = await mongodb.MongoClient.
@@ -54,62 +50,12 @@ const startServer = async () => {
             then(client => client.db());
 
             global.db1 = db1;
+            global.db2 = db2;
             console.log("<-----global.db1----->")
             console.dir(global.db1);
-       // var client = mongoUtil.connectToServer( function( err, client ) {
-       //   if (err) console.log(err);
-       //   // start the rest of your app here
-       //   console.log("Inside Mongo Util Connect to Server");
-       //   console.dir(client);
-       //   return client;
-       // } );
+            console.log("<-----global.db2----->")
+            console.dir(global.db2);
 
-       // const client = new MongoClient(config.mongodb.uri, {native_parser: true, useUnifiedTopology: true });
-       // console.log("==========Mongo Db1 Obj==================");
-       // console.dir(db1);
-       // console.log("============Db2 Obj================");
-       // console.dir(db2);
-       // console.log("============================");
-       //
-       // const mongoDbConnectionPool = {
-       //      db1: db1,
-       //      db2: db2,
-       // };
-       // console.dir(mongoDbConnectionPool.db1);
-       // // client.connect(function(error, database) {
-       //     if(error){
-       //       console.log("Error Conditional Reached within Connect");
-       //       throw error;
-       //     }
-       //     // console.log("Mongo Client Connection Reached");
-       //     // console.dir(database);
-       //     const dbName = "FlexDb"
-       //     const db = client.db(dbName);
-       //     global.mongoDbConnection = db;
-       //     console.log("========================");
-       //     //console.dir(db);
-       //     //mongoDbConnection = client.db(dbName);
-       //     return db;
-       //   });
-       //   console.dir(db);
-
-       // /**
-       // * Connect Mongo Driver to MongoDB.
-       // */
-       // var mongoDatabase;
-       // MongoClient.connect('mongodb://localhost/FlexDb', (err, database) => {
-       //   if (err) {
-       //     console.log('MongoDB Connection Error. Please make sure that MongoDB is running.');
-       //     process.exit(1);
-       //   }else {
-       //     mongoDatabase = database;
-       //     console.log("============================");
-       //     console.log("Connected to MongoDb boi!");
-       //     console.log("============================");
-       //   }
-       // });
-      // console.log("Mongo Connection below");
-       //console.dir(global.mongoDbConnection);
        console.log("============================");
        console.log("Connected to MySql Server!");
        console.log("============================");
@@ -120,56 +66,8 @@ const startServer = async () => {
    }
 };
 
-//const db = startServer();
-//console.dir(db);
 startServer();
-// console.dir("db return from startServer() " + db);
-// console.log("mySqlConnection: " + mySqlConnection);
-// console.log("============Connection pool================");
-// console.dir(db1);
-// console.log("============================");
-// console.dir(mongoDatabase);
 
 // module.exports = {
 //   mongoDbConnectionPool: mongoDbPool
 // }
-
-
-
-
-
-
-
-
-// let storage = multer.diskStorage({
-//   destination: function (req, file, callback) {
-//     callback(null, DIR);
-//   },
-//   filename: function (req, file, cb) {
-//     cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-//   }
-// });
-//
-// let upload = multer({storage: storage});
-//
-//
-// imageApp.post('/api/v1/upload',upload.single('profile'), function (req, res) {
-// message : "Error! in image upload."
-//   if (!req.file) {
-//       console.log("No file received");
-//         message = "Error! in image upload."
-//       res.render('index',{message: message, status:'danger'});
-//
-//     } else {
-//       console.log('file received');
-//       console.log(req);
-//       var sql = "INSERT INTO `file`(`name`, `type`, `size`) VALUES ('" + req.file.filename + "', '"+req.file.mimetype+"', '"+req.file.size+"')";
-//
-//               var query = db.query(sql, function(err, result) {
-//                  console.log('inserted data');
-//               });
-//       message = "Successfully! uploaded";
-//       res.render('index',{message: message, status:'success'});
-//
-//     }
-// });

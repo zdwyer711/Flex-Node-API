@@ -18,15 +18,11 @@
                       //timeout: false
                       maxBytes: 50000000,
               },
-              response: {
-                      status: {
-                          //500: 'There was an internal server error....I\'m sorry',
-                          //200: 'You son of a bitch...you did it!',
-
-                      },
-                     // failAction: aynsc() => {
-                     //
-                     // }
+              validate: {
+                failAction: (request, h, err) => {
+                  console.log("I am within failAction sir");
+                  return error.isJoi() ? h.response(error.details[0]).takeover : h.response(error).takeover;
+                },
               },
         },
         handler: {
@@ -64,10 +60,10 @@
 
                              console.dir("fileReturn: " + fileReturn);
                              console.log("before succesfull return!");
-                             return h;
+                             return h.response("yes hello").code(200);
                              } catch ( err ) {
                                server.log( [ "error", "api", "track" ], err );
-                               return console.log("ERROR: " + err);
+                               return h.response(h).code(501);
                              }
                            }
                          }
@@ -76,40 +72,15 @@
     server.route( {
           method: "GET",
           path: "/api/v1/tracks/{oid}",
-        //  validate: {
           options: {
               validate: {
                 failAction: (request, h, err) => {
                   console.log("I am within failAction sir");
                   return error.isJoi() ? h.response(error.details[0]).takeover : h.response(error).takeover;
-                }
-                // abortEarly: false,
-                // payload: {
-                //           output: 'stream',
-                //           allow: ["Application/json",'application/json', 'multipart/form-data', 'image/jpeg', 'application/pdf', 'application/x-www-form-urlencoded'],
-                //           //timeout: false
-                //           maxBytes: 50000000,
-                //   },
-                //  response: {
-                    // status: {
-                      //     //500: 'There was an internal server error....I\'m sorry',
-                      //     //200: 'You son of a bitch...you did it!',
-                      //
-                      // }
-                      // status: function obj(){
-                        //   return 'yes hello this is obj';
-                    //  },
-                      // failAction: (request, h, err) => {
-                        //   const errorCodes = err.details
-                        //   .map(e => e.context.errorCode)
-                        //   .filter(e => e !== undefined)
-                        //   throw Boom.badRequest(err.message, { errorCodes })
-                        // },
-                      },
-
+                },
               },
-                //},
-        //  },
+
+          },
           handler: async(req, h) => {
                          try {
                                var dataChunk;
@@ -117,9 +88,9 @@
                                       var trackID = new ObjectID(req.params.oid);
                                       console.log("trackOid: " + trackID);
                                } catch(err) {
-                                      //return h.status(400).json({ message: "Invalid trackID in URL parameter. Must be a single String of 12 bytes or a string of 24 hex characters" });
                                       console.log("<----Error ecnountered Attempting to GET track----->");
                                       console.dir(err);
+                                      return h.response(err).code(400);
                                }
                                //h.set('content-type', 'audio/mp3');
                                //h.set('accept-ranges', 'bytes');
@@ -131,10 +102,7 @@
                                 let downloadStream = bucket.openDownloadStream(trackID);
 
                                 const data = downloadStream.on('data', (chunk) => {
-                                    //data = chunk;
-                                    //h = chunk;
                                     dataChunk = chunk;
-                                    return ;
                                 });
 
                                 downloadStream.on('error', () => {
@@ -142,53 +110,30 @@
                                 });
 
                                 const ret = downloadStream.on('end', (req, h) => {
-                                    console.log("GET track complete!");
-                                    console.log("====================");
-                                    //console.dir(data);
-                                    //return 'data: ${data}';
-                                    //return { data: data};
-                                    //return h.response(data).code(200);
-                                    //h.end();
-                                    //return data;
                                     console.log("In download Stream");
                                     console.log("=================================");
-                                    console.dir(dataChunk);
+                                    console.log("Track download completed successfully!");
                                     console.log("=================================");
-                                    h = 'here I am motha fucker';
-                                    //return h.response();
-                                    //return dataChunk;
-                                    //console.dir(h);
-                                    //return h;
-                                    //return 'Did this shit get returned!?';
-                                  //  return h.response(dataChunk).code(201);
+
                                 });
-                                // console.log("====================");
-                                // console.dir(data);
-                                console.log("H return!");
-                                console.dir("variable h: " + h);
-                                console.dir("ret Value: " + ret);
+
                                 console.dir(ret);
                                 console.log("=================================");
                                 console.dir(ret['s']['filter']['_id']['id']);
                                 console.log("=================================");
-                                //console.dir(data);
-                                //console.log("=================================");
-                                //console.dir(ret['s']['files']);
 
-
-                                //return 'Did this shit get returned or what?';
-                                return h.response(ret).code(201);
-                               // return "Track GET Success!";
+                                return h.response(ret).code(200);
                                } catch ( err ) {
                                  server.log( [ "error", "api", "track" ], err );
                                  console.log("ERROR: " + err);
-                                 //return h.status(401).json({ message: "Unable to return track"});
-                               }
+                                 return h.response(err).code(501);
+                                 }
                              }
 
     } );
 
     const handleTrackUpload = file => {
+      return new Promise((resolve, reject) => {
           var name = file.fileName;
           var groomedFileName = file.fileName.replace(/\"/g,"");
 
@@ -213,17 +158,19 @@
 
               uploadStream.on('error', () => {
                   console.log("UploadStream encounter an error!");
-                  return "ERROR Ecountered uploading track!";
+                  reject("ERROR Ecountered uploading track!");
               });
 
               uploadStream.on('finish', () => {
-                    return "Fiile Uploaded Successfully!";
+                    resolve("Fiile Uploaded Successfully!");
               });
 
-              return result;
+              //return result;
           } catch (e) {
               console.log("<-------ERROR-------->");
               console.error(e);
+              reject(e);
           }
-      }
+      })
+    }
 };

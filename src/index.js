@@ -5,26 +5,20 @@ const server = require( "./server" );
 // const multer = require('multer');
 // const mysql = require('mysql');
 
-
-var express = require('express')
-  , routes = express.Router()
-  , http = require('http')
-  , path = require('path')
-  , app = express()
-  , multer = require('multer')
-  , mysql      = require('mysql')
-  , bodyParser=require("body-parser");
+const {MongoClient} = require('mongodb');
+var mysql = require('mysql');
+const mongodb = require('mongodb');
+var mongoUtil = require( './mongoUtil' );
+var mongoDbConnection;
 
 const startServer = async () => {
-   try {
+    try {
        // create an instance of the server application
        const app = await server( config );
 
        // start the web server
        await app.start();
 
-       //console.log("Made it to startServer the mysql host is " + config.mysql.host)
-       console.log("============================");
        const connection = mysql.createConnection({
           host     : config.mysql.host,
           user     : config.mysql.user,
@@ -36,61 +30,44 @@ const startServer = async () => {
        connection.connect();
        global.db = connection;
        const mySqlConnection = connection;
-       //console.dir(connection);
 
+       // First connection for slow operations
+       const db1 = await mongodb.MongoClient.
+          connect(config.mongodb.uri, {
+              useNewUrlParser: true,
+              poolSize: 1, // Only 1 operation can run at a time
+              useUnifiedTopology: true
+          }).
+          then(client => client.db());
+
+          // 2nd connection for fast operations
+          const db2 = await mongodb.MongoClient.
+            connect(config.mongodb.uri, {
+                    useNewUrlParser: true,
+                    poolSize: 1, // Only 1 operation can run at a time
+                    useUnifiedTopology: true
+            }).
+            then(client => client.db());
+
+            global.db1 = db1;
+            global.db2 = db2;
+            console.log("<-----global.db1----->")
+            console.dir(global.db1);
+            console.log("<-----global.db2----->")
+            console.dir(global.db2);
+
+       console.log("============================");
        console.log("Connected to MySql Server!");
        console.log("============================");
        console.log( `Server running at http://${ config.host }:${ config.port }...` );
-       return mySqlConnection;
+       //return mongoDbConnectionPool;
    } catch ( err ) {
        console.log( "startup error:", err );
    }
 };
 
-const mySqlConnection = startServer();
+startServer();
 
-// console.log("mySqlConnection: " + mySqlConnection);
-
-module.exports = {
-  mySqlConnection: mySqlConnection
-}
-
-
-
-
-
-
-
-
-// let storage = multer.diskStorage({
-//   destination: function (req, file, callback) {
-//     callback(null, DIR);
-//   },
-//   filename: function (req, file, cb) {
-//     cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-//   }
-// });
-//
-// let upload = multer({storage: storage});
-//
-//
-// imageApp.post('/api/v1/upload',upload.single('profile'), function (req, res) {
-// message : "Error! in image upload."
-//   if (!req.file) {
-//       console.log("No file received");
-//         message = "Error! in image upload."
-//       res.render('index',{message: message, status:'danger'});
-//
-//     } else {
-//       console.log('file received');
-//       console.log(req);
-//       var sql = "INSERT INTO `file`(`name`, `type`, `size`) VALUES ('" + req.file.filename + "', '"+req.file.mimetype+"', '"+req.file.size+"')";
-//
-//               var query = db.query(sql, function(err, result) {
-//                  console.log('inserted data');
-//               });
-//       message = "Successfully! uploaded";
-//       res.render('index',{message: message, status:'success'});
-//
-//     }
-// });
+// module.exports = {
+//   mongoDbConnectionPool: mongoDbPool
+// }

@@ -16,7 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "@hapi/boom": "^8.0.1",
-    "@hapi/hapi": "^18.4.0",
+    "@hapi/hapi": "^19.1.1",
     "axios": "^0.18.1",
     "bell": "^9.5.0",
     "body-parser": "^1.19.0",
